@@ -3,9 +3,10 @@ import time
 import pyautogui as pg
 
 def getTimeAndExecute(meeting_time,link):
-    t = time.localtime()
-    current_time = time.strftime('%H:%M',t)
-    while current_time!=meeting_time:
+    '''This function gets the time and repetedly checks it with the given time and executes further at correct time'''
+    t = time.localtime()                        #time object
+    current_time = time.strftime('%H:%M',t)     #Device current time
+    while current_time!=meeting_time:           #to check the current time and given time repetedly
         t = time.localtime()
         current_time = time.strftime('%H:%M',t)
     joinMeeting(link)
@@ -13,24 +14,41 @@ def getTimeAndExecute(meeting_time,link):
     
 
 def joinMeeting(link):
-    web.open(link)
-    time.sleep(30)               #waiting for the page to open
-    pg.hotkey('ctrl','d')           #turn off mic
+    '''This function is for joining the user to the meeting'''
+    web.open(link)                      #opens the meeting link
+    joinButton = getJoinButtonCoords()  #geting the coordinates of the join/ask to join button
+    pg.hotkey('ctrl','d')               #turn off mic
     time.sleep(2.5)
-    pg.hotkey('ctrl','e')           #turn off camera
+    pg.hotkey('ctrl','e')               #turn off camera
     time.sleep(2.5)
-    pg.moveTo(930,316)
-    pg.click()
-    time.sleep(2.5)
-    pg.moveTo(930,458)
-    pg.click()
+    pg.click(joinButton)                #click on the join button
+    #pg.moveTo(930,316)
+    #pg.click()
+    #time.sleep(2.5)
+    #pg.moveTo(930,458)
+    #pg.click()
+    
+
+def getJoinButtonCoords():
+    '''This function mainly focuses on clicking the join/ask to join button wherever it appears'''
+    while True:
+        joinButtonCoords = pg.locateCenterOnScreen('img/joinButton.png')
+        askToJoinButtonCoords = pg.locateCenterOnScreen('img/asktojoinbutton.png')
+        if joinButtonCoords:
+            return joinButtonCoords
+        if askToJoinButtonCoords:
+            return askToJoinButtonCoords
+        
+        
+            
+    
 
 def admitEntry():
     time.sleep(2.5)
-    pg.moveTo(847,198)
-    while True:
-        time.sleep(5)
-        pg.click(847,198)
+    admitButton = pg.locateCenterOnScreen('img/admitButton.PNG')
+    if admitButton:
+        pg.click(admitButton)
+    admitEntry()
 
 
 
